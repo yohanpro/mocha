@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+:root {
+  /* 콜리네 텃밭 — 따뜻한 흙냄새 감성 컬러 팔레트 */
+  --color-earth: #6b4f3a;       /* 흙 갈색 */
+  --color-leaf: #4a7c59;        /* 잎 초록 */
+  --color-harvest: #e8a838;     /* 수확 황금 */
+  --color-cream: #faf6f0;       /* 배경 크림 */
+  --color-bark: #3d2b1f;        /* 진한 나무껍질 */
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-bark);
+}
