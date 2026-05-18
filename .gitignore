@@ -38,6 +38,9 @@ yarn-error.log*
 
 # claude code
 .claude/
+.playwright-mcp/
+*.png
+*.jpg
 
 # typescript
 *.tsbuildinfo
