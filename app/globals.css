@@ -1,26 +1,76 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
+
+/* ─── 콜리네 텃밭 × 당근 디자인 언어 ─── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* 우리 색상 (Coolors 팔레트) */
+  --background: oklch(0.98 0.005 90);        /* #FAF7F2 Parchment */
+  --foreground: oklch(0.15 0.005 90);        /* #1C1C1C Carbon */
+
+  --card: oklch(1 0 0);                       /* #FFFFFF */
+  --card-foreground: oklch(0.15 0.005 90);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0.005 90);
+
+  /* primary = Hunter Green #386144 */
+  --primary: oklch(0.42 0.09 155);
+  --primary-foreground: oklch(0.98 0 0);
+
+  /* secondary = Honeydew #D8EFE0 */
+  --secondary: oklch(0.92 0.04 155);
+  --secondary-foreground: oklch(0.35 0.08 155);
+
+  /* accent = Golden Chestnut #B8651E (WCAG AA 5.1:1) */
+  --accent: oklch(0.55 0.13 55);
+  --accent-foreground: oklch(0.98 0 0);
+
+  --muted: oklch(0.96 0.003 90);
+  --muted-foreground: oklch(0.55 0.005 90);
+
+  --destructive: oklch(0.55 0.18 25);
+  --destructive-foreground: oklch(0.98 0 0);
+
+  --border: oklch(0.88 0.008 90);            /* #E8E2D9 — 당근식 1px 선명한 테두리 */
+  --input: oklch(0.88 0.008 90);
+  --ring: oklch(0.42 0.09 155);
+
+  /* 당근 디자인 언어 */
+  --radius: 0.75rem;                          /* 12px — 당근 카드 radius */
+  --radius-btn: 0.625rem;                     /* 10px — 당근 버튼 radius */
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-noto), -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  word-break: keep-all;
 }

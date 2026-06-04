@@ -1,8 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Geist } from "next/font/google";
+import { Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
 
-const geist = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const notoSansKR = Noto_Sans_KR({
+  variable: "--font-noto",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+});
 
 export const metadata: Metadata = {
   title: "콜리네 텃밭",
@@ -20,7 +24,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ko" className={`${geist.variable} antialiased`}>
+    <html lang="ko" className={`${notoSansKR.variable} antialiased`}>
       <body className="min-h-screen">{children}</body>
     </html>
   );

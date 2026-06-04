@@ -1,63 +1,138 @@
 export type ProductStatus = "active" | "sold_out" | "hidden";
 export type OrderStatus = "pending" | "confirmed" | "shipped" | "done";
 
-export interface Product {
+export type Product = {
   id: string;
   name: string;
+  description: string | null;
   price: number;
   stock: number;
   image_url: string | null;
   status: ProductStatus;
   created_at: string;
-}
+  updated_at: string;
+};
 
-export interface Order {
+export type Order = {
   id: string;
   product_id: string;
   qty: number;
+  total_price: number;
   status: OrderStatus;
   created_at: string;
-}
+};
 
-export interface Customer {
+export type Customer = {
   id: string;
   order_id: string;
   name: string;
   phone: string;
   address: string;
-}
+  memo: string | null;
+};
 
-export interface Post {
+export type PostType = "photo" | "youtube";
+
+export type Post = {
   id: string;
-  type: string;
+  type: PostType;
   image_url: string | null;
+  youtube_url: string | null;
   body: string | null;
   created_at: string;
-}
+};
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       products: {
         Row: Product;
-        Insert: Omit<Product, "id" | "created_at">;
-        Update: Partial<Omit<Product, "id" | "created_at">>;
+        Insert: {
+          id?: string;
+          name: string;
+          description?: string | null;
+          price: number;
+          stock: number;
+          image_url?: string | null;
+          status?: ProductStatus;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          name?: string;
+          description?: string | null;
+          price?: number;
+          stock?: number;
+          image_url?: string | null;
+          status?: ProductStatus;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
       orders: {
         Row: Order;
-        Insert: Omit<Order, "id" | "created_at">;
-        Update: Partial<Omit<Order, "id" | "created_at">>;
+        Insert: {
+          id?: string;
+          product_id: string;
+          qty: number;
+          total_price: number;
+          status?: OrderStatus;
+          created_at?: string;
+        };
+        Update: {
+          product_id?: string;
+          qty?: number;
+          total_price?: number;
+          status?: OrderStatus;
+          created_at?: string;
+        };
+        Relationships: [];
       };
       customers: {
         Row: Customer;
-        Insert: Omit<Customer, "id">;
-        Update: Partial<Omit<Customer, "id">>;
+        Insert: {
+          id?: string;
+          order_id: string;
+          name: string;
+          phone: string;
+          address: string;
+          memo?: string | null;
+        };
+        Update: {
+          order_id?: string;
+          name?: string;
+          phone?: string;
+          address?: string;
+          memo?: string | null;
+        };
+        Relationships: [];
       };
       posts: {
         Row: Post;
-        Insert: Omit<Post, "id" | "created_at">;
-        Update: Partial<Omit<Post, "id" | "created_at">>;
+        Insert: {
+          id?: string;
+          type: PostType;
+          image_url?: string | null;
+          youtube_url?: string | null;
+          body?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          type?: PostType;
+          image_url?: string | null;
+          youtube_url?: string | null;
+          body?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
       };
     };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      [_ in never]: never;
+    };
   };
-}
+};
