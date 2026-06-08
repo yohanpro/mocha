@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useOptimistic, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { PostCard } from "@/src/entities/post/ui/PostCard";
 import { getDateGroup } from "@/src/shared/utils/format";
 import type { Post } from "@/src/entities/post/types";
@@ -17,25 +17,16 @@ async function fetchMorePosts(cursor: string): Promise<{ posts: Post[]; hasMore:
 }
 
 export function FeedList({ initialPosts, hasMore: initialHasMore }: Props) {
-  // React 19 — useOptimistic으로 로딩 중 낙관적 상태 관리
-  const [optimisticState, addOptimistic] = useOptimistic(
-    { posts: initialPosts, hasMore: initialHasMore },
-    (state, newPosts: Post[]) => ({
-      posts: [...state.posts, ...newPosts],
-      hasMore: state.hasMore,
-    }),
-  );
-
+  const [posts, setPosts] = useState(initialPosts);
+  const [hasMore, setHasMore] = useState(initialHasMore);
   const [isPending, startTransition] = useTransition();
   const loaderRef = useRef<HTMLDivElement>(null);
-  // hasMore를 ref로 관리해 클로저 stale 방지
-  const hasMoreRef = useRef(initialHasMore);
-  const postsRef = useRef(initialPosts);
+  // 클로저 stale 방지용 ref
+  const stateRef = useRef({ hasMore: initialHasMore, isPending: false });
 
   useEffect(() => {
-    postsRef.current = optimisticState.posts;
-    hasMoreRef.current = optimisticState.hasMore;
-  }, [optimisticState]);
+    stateRef.current = { hasMore, isPending };
+  }, [hasMore, isPending]);
 
   useEffect(() => {
     const el = loaderRef.current;
@@ -43,16 +34,17 @@ export function FeedList({ initialPosts, hasMore: initialHasMore }: Props) {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (!entries[0].isIntersecting || !hasMoreRef.current || isPending) return;
+        if (!entries[0].isIntersecting) return;
+        if (!stateRef.current.hasMore || stateRef.current.isPending) return;
 
-        const cursor = postsRef.current.at(-1)?.created_at;
+        const cursor = posts.at(-1)?.created_at;
         if (!cursor) return;
 
-        // React 19 — startTransition에 async 함수 직접 전달
+        // React 19 — async startTransition
         startTransition(async () => {
-          const { posts: next, hasMore } = await fetchMorePosts(cursor);
-          addOptimistic(next);
-          hasMoreRef.current = hasMore;
+          const { posts: next, hasMore: nextHasMore } = await fetchMorePosts(cursor);
+          setPosts((prev) => [...prev, ...next]);
+          setHasMore(nextHasMore);
         });
       },
       { rootMargin: "200px" },
@@ -60,11 +52,11 @@ export function FeedList({ initialPosts, hasMore: initialHasMore }: Props) {
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [isPending, addOptimistic]);
+  }, [posts]);
 
   // 날짜 그룹 헤더 삽입
   let lastGroup = "";
-  const items = optimisticState.posts.flatMap((post) => {
+  const items = posts.flatMap((post) => {
     const group = getDateGroup(post.created_at);
     const header =
       group !== lastGroup
@@ -91,7 +83,7 @@ export function FeedList({ initialPosts, hasMore: initialHasMore }: Props) {
         )}
       </div>
 
-      {!optimisticState.hasMore && optimisticState.posts.length > 0 && (
+      {!hasMore && posts.length > 0 && (
         <p className="text-center text-xs text-muted-foreground py-6">
           모든 게시물을 다 봤어요 🌱
         </p>
