@@ -12,6 +12,7 @@
 create table products (
   id          uuid primary key default gen_random_uuid(),
   name        text    not null,
+  description text,
   price       integer not null,
   stock       integer not null default 0,
   image_url   text,
@@ -80,6 +81,11 @@ create policy "posts_delete" on posts for delete using (auth.role() = 'authentic
 -- =====================
 -- Storage bucket (상품·피드 이미지)
 -- =====================
+--
+-- ⚠️ DRIFT NOTE (2026-06-13): 아래 버킷/정책은 라이브에 적용되지 않았다.
+--   라이브 확인 결과 'images' 버킷은 존재하지 않으며(Bucket not found),
+--   현재 상품/피드 이미지는 전부 외부 URL(Unsplash 등)을 직접 사용 중이다.
+--   파일 업로드 기능이 필요해지면: 대시보드에서 'images' 버킷 생성 후 아래 정책 적용.
 
 insert into storage.buckets (id, name, public)
 values ('images', 'images', true);
