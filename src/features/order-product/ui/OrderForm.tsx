@@ -1,9 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState, useState } from "react";
 import { useRouter } from "next/navigation";
-import { formatPrice } from "@/src/shared/utils/format";
 import { submitOrder } from "../api/submitOrder";
+import { Button } from "@/components/Button";
 import type { Product } from "@/src/entities/product/types";
 
 interface OrderFormState {
@@ -13,10 +14,12 @@ interface OrderFormState {
 
 export function OrderForm({ product }: { product: Product }) {
   const router = useRouter();
-
   const [qty, setQty] = useState(1);
 
-  const action = async (_prev: OrderFormState, formData: FormData): Promise<OrderFormState> => {
+  const action = async (
+    _prev: OrderFormState,
+    formData: FormData
+  ): Promise<OrderFormState> => {
     try {
       const { orderId } = await submitOrder({
         productId: product.id,
@@ -35,137 +38,219 @@ export function OrderForm({ product }: { product: Product }) {
 
   const [state, formAction, isPending] = useActionState(action, {});
 
-  // 주문 완료 → 완료 화면
   if (state.orderId) {
     return (
-      <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-paper flex items-center justify-center px-4 py-12">
         <div className="max-w-md w-full text-center">
-          <div className="text-5xl mb-4">🎉</div>
-          <h1 className="text-[#1C1C1C] text-2xl font-bold mb-2">주문이 접수됐어요!</h1>
-          <p className="text-[#666] text-sm mb-8">
-            아래 계좌로 입금해주시면 확인 후 바로 배송해드릴게요.
+          <div className="text-6xl mb-8">🎉</div>
+          <h1 className="font-serif font-bold text-3xl text-ink mb-4">
+            주문이 접수됐어요!
+          </h1>
+          <p className="text-ink-soft text-base mb-12 leading-relaxed">
+            아래 계좌로 입금해주시면 확인 후 다음 날 배송해드릴게요.
           </p>
 
-          <div className="bg-white rounded-2xl p-5 mb-6 shadow-sm text-left">
-            <p className="text-xs text-[#B0A899] mb-3 font-medium">입금 계좌</p>
-            <p className="text-[#1C1C1C] font-bold text-lg mb-1">농협 000-0000-0000-00</p>
-            <p className="text-[#555] text-sm mb-1">예금주: 김○○</p>
-            <div className="border-t border-[#F0EDE8] mt-3 pt-3">
-              <p className="text-[#D4813A] font-bold text-xl">
-                {formatPrice(product.price * qty)}
-              </p>
-              <p className="text-[#888] text-xs mt-0.5">
-                {product.name} × {qty}박스
-              </p>
+          <div className="bg-white rounded-2xl p-8 mb-8 border border-border">
+            <div className="text-sm text-ink-soft font-mono mb-3">무통장입금 안내</div>
+            <div className="font-mono font-bold text-xl text-green-700 mb-2">
+              농협 352-0000-0000-00
+            </div>
+            <div className="text-sm text-ink-soft mb-6">
+              예금주 콜리네텃밭
+            </div>
+
+            <div className="border-t border-border pt-6">
+              <div className="font-mono font-bold text-2xl text-ink mb-2">
+                {(product.price * qty).toLocaleString()}원
+              </div>
+              <div className="text-sm text-ink-soft">
+                {product.name} × {qty}개
+              </div>
             </div>
           </div>
 
-          <p className="text-[#888] text-xs mb-8">
-            주문번호: {state.orderId.slice(0, 8).toUpperCase()}
-          </p>
+          <div className="bg-green-100 rounded-xl px-4 py-3 mb-8">
+            <div className="font-mono text-sm text-green-700">
+              주문번호: {state.orderId.slice(0, 8).toUpperCase()}
+            </div>
+          </div>
 
-          <button
-            type="button"
+          <Button
+            variant="primary"
+            size="lg"
+            className="w-full"
             onClick={() => router.push("/")}
-            className="w-full py-3.5 rounded-2xl bg-[#386144] text-white font-bold text-sm hover:bg-[#2d5038] transition-colors"
           >
             홈으로 돌아가기
-          </button>
+          </Button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] pb-32">
-      <main className="max-w-2xl mx-auto px-4 py-6">
-        {/* 주문 상품 요약 */}
-        <div className="bg-white rounded-2xl p-4 mb-6 shadow-sm">
-          <p className="text-xs text-[#B0A899] mb-2 font-medium">주문 상품</p>
-          <p className="font-bold text-[#1C1C1C]">{product.name}</p>
-          <p className="text-[#D4813A] font-semibold mt-1">{formatPrice(product.price)} / 박스</p>
+    <div className="min-h-screen bg-paper pb-40 md:pb-12">
+      <header className="sticky top-0 z-20 bg-white border-b border-border px-4 md:px-8 py-4 flex items-center">
+        <Link href={`/products/${product.id}`} className="text-ink-soft hover:text-ink transition font-bold">
+          ← 상품보기
+        </Link>
+        <span className="font-serif font-bold text-2xl text-green-700 mx-auto">
+          주문서
+        </span>
+        <div className="w-16" />
+      </header>
 
-          <div className="flex items-center gap-3 mt-4">
-            <p className="text-sm text-[#555]">수량</p>
-            <div className="flex items-center gap-2 ml-auto">
-              <button
-                type="button"
-                onClick={() => setQty((q) => Math.max(1, q - 1))}
-                className="w-8 h-8 rounded-full bg-[#F0EDE8] flex items-center justify-center text-[#555] font-bold"
-              >
-                −
-              </button>
-              <span className="w-6 text-center font-bold text-[#1C1C1C]">{qty}</span>
-              <button
-                type="button"
-                onClick={() => setQty((q) => q + 1)}
-                className="w-8 h-8 rounded-full bg-[#D8EFE0] flex items-center justify-center text-[#386144] font-bold"
-              >
-                +
-              </button>
-            </div>
-          </div>
-
-          <div className="border-t border-[#F0EDE8] mt-4 pt-4 flex justify-between">
-            <span className="text-sm text-[#555]">합계</span>
-            <span className="font-bold text-[#D4813A]">{formatPrice(product.price * qty)}</span>
-          </div>
-        </div>
-
-        <form action={formAction} className="space-y-4">
-          <div className="bg-white rounded-2xl p-4 shadow-sm space-y-4">
-            <p className="text-xs text-[#B0A899] font-medium">배송 정보</p>
-
-            {[
-              { label: "이름", name: "name", type: "text", placeholder: "홍길동" },
-              { label: "연락처", name: "phone", type: "tel", placeholder: "010-0000-0000" },
-              { label: "주소", name: "address", type: "text", placeholder: "서울시 마포구 합정동 123-4" },
-            ].map((f) => (
-              <div key={f.name}>
-                <label className="text-sm font-medium text-[#1C1C1C] block mb-1.5">{f.label}</label>
-                <input
-                  type={f.type}
-                  name={f.name}
-                  placeholder={f.placeholder}
-                  required
-                  className="w-full px-4 py-3 rounded-xl border border-[#E8E2D9] bg-[#FAF7F2] text-[#1C1C1C] placeholder-[#C0BAB2] text-sm focus:outline-none focus:border-[#386144] transition-colors"
-                />
-              </div>
-            ))}
-
+      <main className="max-w-6xl mx-auto px-4 md:px-8 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* ── 주문 정보 ── */}
+          <div className="lg:col-span-2 space-y-6">
             <div>
-              <label className="text-sm font-medium text-[#1C1C1C] block mb-1.5">
-                배송 메모 <span className="text-[#B0A899] font-normal">(선택)</span>
-              </label>
-              <textarea
-                name="memo"
-                placeholder="문 앞에 놓아주세요"
-                rows={2}
-                className="w-full px-4 py-3 rounded-xl border border-[#E8E2D9] bg-[#FAF7F2] text-[#1C1C1C] placeholder-[#C0BAB2] text-sm focus:outline-none focus:border-[#386144] transition-colors resize-none"
-              />
+              <h2 className="font-serif font-bold text-2xl text-ink mb-6">
+                배송 정보
+              </h2>
+              <div className="grid grid-cols-2 gap-4">
+                {[
+                  {
+                    label: "받는 분",
+                    name: "name",
+                    type: "text",
+                    placeholder: "홍길동",
+                  },
+                  {
+                    label: "연락처",
+                    name: "phone",
+                    type: "tel",
+                    placeholder: "010-0000-0000",
+                  },
+                  {
+                    label: "배송지",
+                    name: "address",
+                    type: "text",
+                    placeholder: "도로명 주소를 입력하세요",
+                    className: "col-span-2",
+                  },
+                  {
+                    label: "배송 메모 (선택)",
+                    name: "memo",
+                    type: "textarea",
+                    placeholder: "부재 시 문 앞에 놓아주세요",
+                    className: "col-span-2",
+                  },
+                ].map((field) => (
+                  <div key={field.name} className={field.className || ""}>
+                    <label className="text-sm font-bold text-ink block mb-2">
+                      {field.label}
+                    </label>
+                    {field.type === "textarea" ? (
+                      <textarea
+                        name={field.name}
+                        placeholder={field.placeholder}
+                        rows={3}
+                        className="w-full px-4 py-3 rounded-[12px] border-2 border-border bg-white text-ink placeholder-ink-soft text-sm focus:outline-none focus:border-green-600 transition-colors"
+                      />
+                    ) : (
+                      <input
+                        type={field.type}
+                        name={field.name}
+                        placeholder={field.placeholder}
+                        required
+                        className="w-full px-4 py-3 rounded-[12px] border-2 border-border bg-white text-ink placeholder-ink-soft text-sm focus:outline-none focus:border-green-600 transition-colors"
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
-          {state.error && (
-            <p className="text-red-500 text-sm px-1">{state.error}</p>
-          )}
+          {/* ── 주문 요약 ── */}
+          <form action={formAction} className="lg:sticky lg:top-24 h-fit space-y-6">
+            <div className="bg-white rounded-2xl border-2 border-border p-6">
+              <div className="font-serif font-bold text-lg text-ink mb-6">
+                주문 요약
+              </div>
 
-          <div className="bg-[#FFF8F0] border border-[#F5E0C0] rounded-2xl p-4 text-sm text-[#9C7040] space-y-1">
-            <p className="font-semibold mb-1">💳 결제 안내</p>
-            <p>주문 접수 후 계좌이체로 결제합니다.</p>
-            <p>입금 확인 후 1~2일 내 발송됩니다.</p>
-          </div>
+              {/* 상품 */}
+              <div className="flex gap-4 mb-6">
+                <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-green-100 to-clay-100 flex-shrink-0 flex items-center justify-center text-xs text-ink-soft">
+                  사진
+                </div>
+                <div className="flex-1">
+                  <div className="font-bold text-ink mb-1">{product.name}</div>
+                  <div className="font-mono text-sm text-ink-soft">
+                    {product.price.toLocaleString()}원
+                  </div>
+                </div>
+              </div>
 
-          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E8E2D9] p-4 md:static md:border-0 md:bg-transparent md:p-0">
-            <button
+              {/* 수량 */}
+              <div className="flex items-center justify-between mb-6 pb-6 border-b border-border">
+                <span className="text-sm text-ink-soft">수량</span>
+                <div className="flex items-center gap-3 border-2 border-border rounded-[10px] px-4 py-2">
+                  <button
+                    type="button"
+                    onClick={() => setQty((q) => Math.max(1, q - 1))}
+                    className="text-xl font-bold text-green-600 hover:text-green-700"
+                  >
+                    −
+                  </button>
+                  <span className="font-mono font-bold text-ink w-6 text-center">
+                    {qty}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setQty((q) => q + 1)}
+                    className="text-xl font-bold text-green-600 hover:text-green-700"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
+              {/* 입금 안내 */}
+              <div className="bg-green-100 rounded-[14px] p-4 mb-6">
+                <div className="font-bold text-green-700 text-sm mb-2">
+                  무통장입금 안내
+                </div>
+                <div className="font-mono font-bold text-sm text-green-700 mb-1">
+                  농협 352-0000-0000-00
+                </div>
+                <div className="text-xs text-green-600">
+                  예금주 콜리네텃밭
+                </div>
+              </div>
+
+              {/* 합계 */}
+              <div className="pt-6 border-t border-border">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-sm text-ink-soft">총 결제금액</span>
+                  <div className="font-mono font-bold text-2xl text-ink">
+                    {(product.price * qty).toLocaleString()}원
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {state.error && (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-600">
+                {state.error}
+              </div>
+            )}
+
+            <Button
               type="submit"
+              variant="primary"
+              size="lg"
               disabled={isPending}
-              className="w-full py-4 rounded-2xl bg-[#386144] text-white font-bold text-base hover:bg-[#2d5038] active:scale-[0.98] transition-all disabled:opacity-60"
+              className="w-full"
             >
-              {isPending ? "주문 처리 중..." : `${formatPrice(product.price * qty)} 주문하기`}
-            </button>
-          </div>
-        </form>
+              {isPending ? "주문 처리 중..." : "주문 완료하기"}
+            </Button>
+            <p className="text-xs text-center text-ink-soft leading-relaxed">
+              입금이 확인되면 다음 날 발송됩니다.
+            </p>
+          </form>
+        </div>
       </main>
     </div>
   );

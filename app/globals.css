@@ -2,43 +2,54 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* ─── 콜리네 텃밭 × 당근 디자인 언어 ─── */
+/* ─── 콜리네 텃밭 디자인시스템 ─── */
 :root {
-  /* 우리 색상 (Coolors 팔레트) */
-  --background: oklch(0.98 0.005 90);        /* #FAF7F2 Parchment */
-  --foreground: oklch(0.15 0.005 90);        /* #1C1C1C Carbon */
+  /* 텃밭 그린 (Primary) */
+  --green-700: #2F4A2C;
+  --green-600: #3E5E3A;      /* 기본 primary */
+  --green-500: #557A4E;
+  --green-100: #E7EDE2;      /* 틴트 */
 
-  --card: oklch(1 0 0);                       /* #FFFFFF */
-  --card-foreground: oklch(0.15 0.005 90);
+  /* 흙 클레이 (Accent) */
+  --clay-600: #B5683A;       /* 기본 accent */
+  --clay-100: #F3E4D8;       /* 틴트 */
 
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0.005 90);
+  /* 중립 (Neutral) */
+  --ink: #292621;            /* 본문 */
+  --ink-soft: #6B6459;       /* 서브 텍스트 */
+  --paper: #FAF7F0;          /* 배경 */
+  --card: #FFFFFF;           /* 카드 */
+  --border: #E8E2D6;         /* 테두리 */
 
-  /* primary = Hunter Green #386144 */
-  --primary: oklch(0.42 0.09 155);
-  --primary-foreground: oklch(0.98 0 0);
+  /* CSS Variables for Tailwind */
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--card);
+  --card-foreground: var(--ink);
+  --primary: var(--green-600);
+  --primary-foreground: var(--card);
+  --secondary: var(--green-100);
+  --secondary-foreground: var(--green-700);
+  --accent: var(--clay-600);
+  --accent-foreground: var(--card);
+  --muted: var(--green-100);
+  --muted-foreground: var(--ink-soft);
+  --destructive: #DC2626;
+  --destructive-foreground: var(--card);
+  --border: var(--border);
+  --input: var(--border);
+  --ring: var(--green-600);
 
-  /* secondary = Honeydew #D8EFE0 */
-  --secondary: oklch(0.92 0.04 155);
-  --secondary-foreground: oklch(0.35 0.08 155);
+  /* 간격 · 모양 */
+  --radius-sm: 0.5rem;       /* 8px */
+  --radius-md: 0.875rem;     /* 14px */
+  --radius-lg: 1.25rem;      /* 20px */
+  --radius-pill: 999px;
+  --radius: var(--radius-md); /* 기본 14px */
 
-  /* accent = Golden Chestnut #B8651E (WCAG AA 5.1:1) */
-  --accent: oklch(0.55 0.13 55);
-  --accent-foreground: oklch(0.98 0 0);
-
-  --muted: oklch(0.96 0.003 90);
-  --muted-foreground: oklch(0.55 0.005 90);
-
-  --destructive: oklch(0.55 0.18 25);
-  --destructive-foreground: oklch(0.98 0 0);
-
-  --border: oklch(0.88 0.008 90);            /* #E8E2D9 — 당근식 1px 선명한 테두리 */
-  --input: oklch(0.88 0.008 90);
-  --ring: oklch(0.42 0.09 155);
-
-  /* 당근 디자인 언어 */
-  --radius: 0.75rem;                          /* 12px — 당근 카드 radius */
-  --radius-btn: 0.625rem;                     /* 10px — 당근 버튼 radius */
+  /* 그림자 (따뜻한 톤) */
+  --shadow-sm: 0 1px 2px rgba(41, 38, 33, 0.06);
+  --shadow-md: 0 6px 20px rgba(41, 38, 33, 0.1);
 }
 
 @theme inline {
