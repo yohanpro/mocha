@@ -1,21 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import {
-  Noto_Sans_KR,
-  Noto_Serif_KR,
-  Nanum_Gothic_Coding,
-} from "next/font/google";
+import { Gowun_Batang, Nanum_Gothic_Coding } from "next/font/google";
 import "./globals.css";
 
-const notoSansKR = Noto_Sans_KR({
-  variable: "--font-sans",
-  subsets: ["latin"],
-  weight: ["400", "500", "700", "900"],
-});
-
-const notoSerifKR = Noto_Serif_KR({
+const gowunBatang = Gowun_Batang({
   variable: "--font-serif",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["400", "700"],
 });
 
 const nanumGothicCoding = Nanum_Gothic_Coding({
@@ -42,7 +32,7 @@ export default function RootLayout({
   return (
     <html
       lang="ko"
-      className={`${notoSansKR.variable} ${notoSerifKR.variable} ${nanumGothicCoding.variable} antialiased`}
+      className={`${gowunBatang.variable} ${nanumGothicCoding.variable} antialiased`}
     >
       <body className="min-h-screen bg-paper text-ink">{children}</body>
     </html>
