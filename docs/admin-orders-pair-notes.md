@@ -1,6 +1,6 @@
 # 관리자 주문 목록 — 페어 세션 노트
 
-> 작성일: 2026-06-13 | 같이 본 코드: `app/(admin)/dashboard/orders/*`, `src/entities/order/*`, `src/features/manage-order/*`
+> 작성일: 2026-06-13 | 같이 본 코드: `app/admin/dashboard/orders/*`, `src/entities/order/*`, `src/features/manage-order/*`
 >
 > 이 문서는 "무엇을 만들었나"(→ [admin-orders-technical-spec.md](admin-orders-technical-spec.md))가 아니라 **"왜 그렇게 만들었고, 다음에 비슷한 걸 만들 때 뭘 조심해야 하나"**를 옆에서 짚어주는 노트야. 코드는 명세에 있으니, 여기선 판단을 본다.
 
@@ -75,7 +75,7 @@ export function OrderCard({ order, children }) {
   return <div>...<div className="action">{children}</div></div>;
 }
 
-// app/(admin)/dashboard/orders/page.tsx  (조립은 위 레이어가)
+// app/admin/dashboard/orders/page.tsx  (조립은 위 레이어가)
 <OrderCard order={o}>
   <OrderStatusControl orderId={o.id} status={o.status} />
 </OrderCard>

@@ -76,7 +76,7 @@ export function ProductForm({ product }: { product?: Product }) {
           {pending ? "저장 중…" : product ? "수정 저장" : "상품 등록"}
         </Button>
         <Button asChild variant="outline" type="button">
-          <Link href="/dashboard/products">취소</Link>
+          <Link href="/admin/dashboard/products">취소</Link>
         </Button>
       </div>
     </form>

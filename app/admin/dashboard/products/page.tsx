@@ -14,7 +14,7 @@ export default async function AdminProductsPage() {
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-lg font-bold">상품 관리</h1>
         <Button asChild size="sm">
-          <Link href="/dashboard/products/new">
+          <Link href="/admin/dashboard/products/new">
             <Plus className="size-4" />새 상품
           </Link>
         </Button>
@@ -31,7 +31,7 @@ export default async function AdminProductsPage() {
             return (
               <li key={p.id}>
                 <Link
-                  href={`/dashboard/products/${p.id}`}
+                  href={`/admin/dashboard/products/${p.id}`}
                   className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 transition-colors hover:border-[#C8C2B9]"
                 >
                   <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-secondary">

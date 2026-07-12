@@ -1,8 +1,9 @@
 # 관리자 인증 — 기술 설계 문서
 
-> 작성일: 2026-06-13 | 대상: `app/(admin)/*`, `proxy.ts`
+> 작성일: 2026-06-13 | 대상: `app/admin/*`, `proxy.ts`
+> 갱신: 2026-07-12 — 관리자 라우트를 `(admin)` 그룹(`/dashboard`, `/login`)에서 `app/admin/*` 세그먼트(`/admin/dashboard`, `/admin/login`)로 이동. 소비자 로그인과의 URL 충돌 방지.
 
-STEP 3 관리자 화면의 진입 관문. Supabase Auth(이메일/비밀번호) 기반으로 `/dashboard/*`를 보호한다.
+STEP 3 관리자 화면의 진입 관문. Supabase Auth(이메일/비밀번호) 기반으로 `/admin/dashboard/*`를 보호한다.
 
 ---
 
@@ -27,13 +28,13 @@ export const config = { matcher: [...] };
 ## 2. 파일 구조
 
 ```
-proxy.ts                                  ← 게이트 진입점 (matcher: /dashboard/*, /login)
+proxy.ts                                  ← 게이트 진입점 (matcher: /admin/dashboard/*, /admin/login)
 src/shared/lib/supabase/proxy.ts          ← updateSession(): 세션 갱신 + 보호 로직
-app/(admin)/login/
+app/admin/login/
   ├─ page.tsx                             ← 로그인 화면 (Server Component)
   ├─ LoginForm.tsx                        ← "use client", useActionState
   └─ actions.ts                           ← "use server", login() / logout()
-app/(admin)/dashboard/layout.tsx          ← 보호 영역 공통 상단바 + 이중 방어
+app/admin/dashboard/layout.tsx            ← 보호 영역 공통 상단바 + 이중 방어
 ```
 
 기존 소비자 코드(`app/(consumer)/*`)는 변경 없음.
@@ -44,22 +45,22 @@ app/(admin)/dashboard/layout.tsx          ← 보호 영역 공통 상단바 + �
 
 ```
 [비로그인]
-  /dashboard/orders 요청
+  /admin/dashboard/orders 요청
     → proxy: getUser() == null
-    → /login 리다이렉트
+    → /admin/login 리다이렉트
 
 [로그인]
-  /login 폼 제출
+  /admin/login 폼 제출
     → login() 서버액션: signInWithPassword()
-    → 성공 시 세션 쿠키 set → /dashboard/orders 리다이렉트
+    → 성공 시 세션 쿠키 set → /admin/dashboard/orders 리다이렉트
     → 실패 시 에러 문자열 반환 (페이지 유지)
 
-[로그인 상태로 /login 재방문]
+[로그인 상태로 /admin/login 재방문]
   → proxy: getUser() != null
-  → /dashboard/orders 리다이렉트 (이미 로그인됨)
+  → /admin/dashboard/orders 리다이렉트 (이미 로그인됨)
 
 [로그아웃]
-  layout 상단바 로그아웃 → logout() 서버액션: signOut() → /login
+  layout 상단바 로그아웃 → logout() 서버액션: signOut() → /admin/login
 ```
 
 ---
@@ -74,13 +75,13 @@ const { data: { user } } = await supabase.auth.getUser();
 const { pathname } = request.nextUrl;
 
 // 비로그인 → 대시보드 차단
-if (!user && pathname.startsWith("/dashboard")) redirect("/login");
+if (!user && pathname.startsWith("/admin/dashboard")) redirect("/admin/login");
 
 // 로그인 상태로 로그인 페이지 → 대시보드
-if (user && pathname === "/login") redirect("/dashboard/orders");
+if (user && pathname === "/admin/login") redirect("/admin/dashboard/orders");
 ```
 
-`config.matcher`로 `/dashboard/:path*` 와 `/login`에만 적용 → 소비자 페이지엔 오버헤드 없음.
+`config.matcher`로 `/admin/dashboard/:path*` 와 `/admin/login`에만 적용 → 소비자 페이지엔 오버헤드 없음.
 
 ---
 
@@ -89,11 +90,11 @@ if (user && pathname === "/login") redirect("/dashboard/orders");
 기존 주문 폼(`OrderForm`)과 동일하게 React 19 `useActionState` 패턴을 따른다.
 
 ```ts
-// app/(admin)/login/actions.ts
+// app/admin/login/actions.ts
 export async function login(_prev: LoginState, formData: FormData): Promise<LoginState> {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) return { error: "이메일 또는 비밀번호가 올바르지 않습니다." };
-  redirect("/dashboard/orders");
+  redirect("/admin/dashboard/orders");
 }
 ```
 
@@ -108,7 +109,7 @@ proxy가 1차 게이트지만, 서버 렌더 시점에도 한 번 더 확인한�
 
 ```ts
 const { data: { user } } = await supabase.auth.getUser();
-if (!user) redirect("/login");
+if (!user) redirect("/admin/login");
 ```
 
 레이아웃은 보호 영역 공통 상단바(브랜드 · 로그인 이메일 · 로그아웃 버튼)도 함께 제공한다.
@@ -135,10 +136,10 @@ Authentication > Users > Add user
 
 | 시나리오 | 결과 |
 |---|---|
-| 비로그인 → `/dashboard` | `/login` 차단 ✅ |
+| 비로그인 → `/admin/dashboard` | `/admin/login` 차단 ✅ |
 | 틀린 비밀번호 | 에러 표시, 페이지 유지 ✅ |
-| 정상 로그인 | `/dashboard/orders` 진입 ✅ |
-| 로그아웃 | `/login` 이동 ✅ |
+| 정상 로그인 | `/admin/dashboard/orders` 진입 ✅ |
+| 로그아웃 | `/admin/login` 이동 ✅ |
 | 로그아웃 후 재접근 | 다시 차단 ✅ |
 
 ---

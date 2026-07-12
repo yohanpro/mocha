@@ -25,7 +25,7 @@
 | Frontend | **Next.js 16** (App Router, Turbopack) | SSR+SEO, Server Actions로 백엔드 최소화 |
 | Backend/DB | **Supabase** (Postgres + Auth + Storage) | 1인 개발에 BaaS가 합리적. RLS로 권한을 DB에 위임 |
 | 결제(MVP) | **무통장입금** (수동) | PortOne 셋업 복잡도 대비 MVP 가치 낮음 → Phase 2 |
-| 배포 | **Vercel** | Next.js 1급 지원. ⚠️ 아직 파이프라인 미연결 |
+| 배포 | **Vercel** | Next.js 1급 지원. ✅ 연결됨 — main push 시 자동배포, 프로덕션 https://mocha-gilt-beta.vercel.app |
 | UI | shadcn/ui + Lucide + Tailwind | 당근마켓 디자인 언어(Noto Sans KR, 1px border, aspect-square) |
 
 > ⚠️ **Next 16은 평소의 Next가 아니다.** 파일 규약·API가 훈련 데이터와 다를 수 있다. 코드 전 `node_modules/next/dist/docs/` 확인 (AGENTS.md). 대표 함정: `middleware.ts` → **`proxy.ts`** 개명.
@@ -40,14 +40,14 @@
 app/
   (consumer)/          ← 공개. 메인·상품·상세·주문·피드
     page.tsx  products/  products/[id]/  order/  feed/
-  (admin)/             ← 보호. proxy 게이트 뒤
+  admin/               ← 보호. proxy 게이트 뒤 (실제 세그먼트 → URL `/admin/*`)
     login/             ← 인증 진입
-    dashboard/
-      orders/  products/  products/[id]/  products/new/  feed/
+    dashboard/           ← page.tsx = 관리자 홈(처리할 일 요약 + 섹션 허브)
+      orders/  products/  products/[id]/  products/new/  feed/  feed/new/
   api/posts/           ← 피드용 라우트 핸들러
 ```
 
-괄호 그룹 `(consumer)`/`(admin)`은 **URL에 안 드러나는 논리적 분리**다. 덕분에 관리자 전체를 `proxy.ts` matcher 하나(`/dashboard/*`, `/login`)로 감쌀 수 있다.
+소비자는 괄호 그룹 `(consumer)`로 **URL에 안 드러나는 논리적 분리**, 관리자는 실제 `admin/` 세그먼트라 **`/admin/*` 접두사**를 갖는다. 덕분에 관리자 전체를 `proxy.ts` matcher 하나(`/admin/dashboard/*`, `/admin/login`)로 감싸고, 나중에 소비자 로그인이 생겨도 `/login`이 겹치지 않는다. (2026-07-12 이동: 이전엔 `(admin)` 그룹이라 URL이 `/dashboard`·`/login`이었음.)
 
 ### src/ — FSD (Feature-Sliced Design)
 
@@ -112,12 +112,12 @@ posts (독립)  type: photo | youtube
 ## 6. 인증 — proxy 게이트 (Next 16)
 
 ```
-proxy.ts (matcher: /dashboard/*, /login)
+proxy.ts (matcher: /admin/dashboard/*, /admin/login)
   └─ updateSession(): Supabase 세션 쿠키 갱신 + 보호 판정
-       비로그인 + /dashboard/* → /login 리다이렉트
-       로그인  + /login        → /dashboard/orders
+       비로그인 + /admin/dashboard/* → /admin/login 리다이렉트
+       로그인  + /admin/login        → /admin/dashboard/orders
 
-dashboard/layout.tsx → 서버에서 getUser() 재확인 (이중 방어)
+admin/dashboard/layout.tsx → 서버에서 getUser() 재확인 (이중 방어)
 ```
 
 계정은 Supabase 대시보드에서 수동 생성(단일 관리자). 자세히: [admin-auth-technical-spec.md](admin-auth-technical-spec.md).
@@ -147,7 +147,7 @@ dashboard/layout.tsx → 서버에서 getUser() 재확인 (이중 방어)
 | images 버킷 | 미존재 | schema.sql엔 선언, 라이브엔 없음. 현 이미지 전부 외부 URL |
 | seed 중복 | 데이터 | products/orders에 동일 행 다수(seed 다회 투입 흔적) |
 | `widgets` 레이어 | 빈 껍데기 | tsconfig 경로만 있고 파일 0 |
-| Vercel 배포 | 미연결 | 실제 URL 없음 → 아버지 폰 테스트 불가 |
+| Vercel 배포 | ✅ 연결됨 | 프로덕션 https://mocha-gilt-beta.vercel.app (2026-07-05 라이브 확인). main push 시 자동배포. ⚠️ 관리자 비번 임시값 교체 필요 |
 
 ---
 
@@ -169,7 +169,7 @@ docs/
 ## 10. 로드맵
 
 - **Phase 1 (지금) — MVP**: 고구마 1박스 완판.
-  - 인프라 ✅ / 소비자 화면 ✅ / 관리자: 인증 ✅ 주문 ✅ 상품 ✅ · **피드 등록 남음** · Vercel 배포 남음 · E2E·판매 실험 남음
+  - 인프라 ✅ / 소비자 화면 ✅ / 관리자: 인증 ✅ 주문 ✅ 상품 ✅ 피드 등록·삭제 ✅ · Vercel 배포 ✅ · **남음: 관리자 네비(#2) · 이미지 업로드(#3) · E2E·판매 실험**
 - **Phase 2 — 자동화**: PortOne 결제, Kakao 알림톡, 오픈뱅킹
 - **Phase 3 — SaaS**: `farm_id` 멀티테넌시, 타 농가 입점
 - **Phase 4 — 사업화**: 유료 전환

@@ -1,6 +1,6 @@
 # 관리자 주문 목록 — 기술 설계 문서
 
-> 작성일: 2026-06-13 | 대상: `app/(admin)/dashboard/orders/page.tsx`
+> 작성일: 2026-06-13 | 대상: `app/admin/dashboard/orders/page.tsx`
 
 아버지가 매일 쓰는 핵심 운영 화면. 주문 조회 → 입금 확인 → 상태 변경(발송/완료)을 한 화면에서 처리한다.
 
@@ -60,7 +60,7 @@ pending(입금대기) → confirmed(입금확인) → shipped(배송중) → don
 ## 4. 컴포넌트 구조 (FSD)
 
 ```
-app/(admin)/dashboard/orders/page.tsx        ← Server Component, getOrders() 조회·조립
+app/admin/dashboard/orders/page.tsx          ← Server Component, getOrders() 조회·조립
   └─ entities/order/ui/OrderCard.tsx          ← 표시 전용 (Server)
        └─ {children}  ← 액션 슬롯
   └─ features/manage-order/ui/OrderStatusControl.tsx  ← "use client", 상태 변경 버튼
@@ -79,7 +79,7 @@ app/(admin)/dashboard/orders/page.tsx        ← Server Component, getOrders() �
 export async function updateOrderStatus(orderId, status) {
   if (!ORDER_FLOW.includes(status)) throw ...;   // DB check와 동일 방어
   await supabase.from("orders").update({ status }).eq("id", orderId);
-  revalidatePath("/dashboard/orders");           // 변경 후 서버 재조회
+  revalidatePath("/admin/dashboard/orders");     // 변경 후 서버 재조회
 }
 ```
 

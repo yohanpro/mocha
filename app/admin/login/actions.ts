@@ -25,11 +25,11 @@ export async function login(
     return { error: "이메일 또는 비밀번호가 올바르지 않습니다." };
   }
 
-  redirect("/dashboard/orders");
+  redirect("/admin/dashboard/orders");
 }
 
 export async function logout() {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  redirect("/login");
+  redirect("/admin/login");
 }
