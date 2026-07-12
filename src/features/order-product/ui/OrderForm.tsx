@@ -24,7 +24,6 @@ export function OrderForm({ product }: { product: Product }) {
       const { orderId } = await submitOrder({
         productId: product.id,
         qty,
-        totalPrice: product.price * qty,
         name: formData.get("name") as string,
         phone: formData.get("phone") as string,
         address: formData.get("address") as string,
@@ -101,7 +100,7 @@ export function OrderForm({ product }: { product: Product }) {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 md:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <form action={formAction} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* ── 주문 정보 ── */}
           <div className="lg:col-span-2 space-y-6">
             <div>
@@ -164,7 +163,7 @@ export function OrderForm({ product }: { product: Product }) {
           </div>
 
           {/* ── 주문 요약 ── */}
-          <form action={formAction} className="lg:sticky lg:top-24 h-fit space-y-6">
+          <div className="lg:sticky lg:top-24 h-fit space-y-6">
             <div className="bg-white rounded-2xl border-2 border-border p-6">
               <div className="font-serif font-bold text-lg text-ink mb-6">
                 주문 요약
@@ -249,8 +248,8 @@ export function OrderForm({ product }: { product: Product }) {
             <p className="text-xs text-center text-ink-soft leading-relaxed">
               입금이 확인되면 다음 날 발송됩니다.
             </p>
-          </form>
-        </div>
+          </div>
+        </form>
       </main>
     </div>
   );

@@ -132,7 +132,17 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      place_order: {
+        Args: {
+          p_product_id: string;
+          p_qty: number;
+          p_name: string;
+          p_phone: string;
+          p_address: string;
+          p_memo?: string | null;
+        };
+        Returns: string;
+      };
     };
   };
 };

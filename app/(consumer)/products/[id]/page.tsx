@@ -113,7 +113,7 @@ export default async function ProductDetailPage({
               </div>
             ) : (
               <div className="flex flex-col gap-3">
-                <Link href={`/checkout?product=${id}`} className="w-full">
+                <Link href={`/order?product=${id}`} className="w-full">
                   <Button variant="primary" size="lg" className="w-full">
                     주문하기
                   </Button>
