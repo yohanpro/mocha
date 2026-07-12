@@ -6,10 +6,10 @@ import { Home, ClipboardList, Package, Newspaper, Sprout, LogOut } from "lucide-
 import { logout } from "../login/actions";
 
 const ITEMS = [
-  { href: "/dashboard", label: "홈", icon: Home, exact: true },
-  { href: "/dashboard/orders", label: "주문", icon: ClipboardList },
-  { href: "/dashboard/products", label: "상품", icon: Package },
-  { href: "/dashboard/feed", label: "피드", icon: Newspaper },
+  { href: "/admin/dashboard", label: "홈", icon: Home, exact: true },
+  { href: "/admin/dashboard/orders", label: "주문", icon: ClipboardList },
+  { href: "/admin/dashboard/products", label: "상품", icon: Package },
+  { href: "/admin/dashboard/feed", label: "피드", icon: Newspaper },
 ];
 
 function isActive(pathname: string, href: string, exact?: boolean) {

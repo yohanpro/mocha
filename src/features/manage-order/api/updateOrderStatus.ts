@@ -19,5 +19,5 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/dashboard/orders");
+  revalidatePath("/admin/dashboard/orders");
 }

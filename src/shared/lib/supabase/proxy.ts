@@ -34,16 +34,16 @@ export async function updateSession(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 비로그인 상태로 대시보드 접근 → 로그인으로
-  if (!user && pathname.startsWith("/dashboard")) {
+  if (!user && pathname.startsWith("/admin/dashboard")) {
     const url = request.nextUrl.clone();
-    url.pathname = "/login";
+    url.pathname = "/admin/login";
     return NextResponse.redirect(url);
   }
 
   // 이미 로그인한 상태로 로그인 페이지 접근 → 대시보드로
-  if (user && pathname === "/login") {
+  if (user && pathname === "/admin/login") {
     const url = request.nextUrl.clone();
-    url.pathname = "/dashboard/orders";
+    url.pathname = "/admin/dashboard/orders";
     return NextResponse.redirect(url);
   }
 

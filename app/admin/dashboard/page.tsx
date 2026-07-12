@@ -42,7 +42,7 @@ export default async function DashboardHomePage() {
       ) : (
         <div className="mb-6 grid grid-cols-2 gap-3">
           <TodoCard
-            href="/dashboard/orders"
+            href="/admin/dashboard/orders"
             icon={<Wallet className="size-5" />}
             count={pending}
             label="입금 확인 대기"
@@ -50,7 +50,7 @@ export default async function DashboardHomePage() {
             urgent
           />
           <TodoCard
-            href="/dashboard/orders"
+            href="/admin/dashboard/orders"
             icon={<Truck className="size-5" />}
             count={toShip}
             label="발송 대기"
@@ -63,19 +63,19 @@ export default async function DashboardHomePage() {
       <p className="mb-2 text-xs font-semibold text-muted-foreground">바로가기</p>
       <ul className="space-y-2">
         <NavCard
-          href="/dashboard/orders"
+          href="/admin/dashboard/orders"
           icon={<ClipboardList className="size-5 text-primary" />}
           title="주문 관리"
           desc={`전체 ${orders.length}건`}
         />
         <NavCard
-          href="/dashboard/products"
+          href="/admin/dashboard/products"
           icon={<Package className="size-5 text-primary" />}
           title="상품 관리"
           desc={soldOut > 0 ? `${products.length}개 · 품절 ${soldOut}` : `${products.length}개`}
         />
         <NavCard
-          href="/dashboard/feed"
+          href="/admin/dashboard/feed"
           icon={<Newspaper className="size-5 text-primary" />}
           title="피드 관리"
           desc={`게시글 ${posts.length}개`}

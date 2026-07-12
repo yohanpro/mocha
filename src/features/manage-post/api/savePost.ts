@@ -49,7 +49,7 @@ export async function savePost(
 
   if (error) return { error: error.message };
 
-  revalidatePath("/dashboard/feed");
+  revalidatePath("/admin/dashboard/feed");
   revalidatePath("/feed");
-  redirect("/dashboard/feed");
+  redirect("/admin/dashboard/feed");
 }

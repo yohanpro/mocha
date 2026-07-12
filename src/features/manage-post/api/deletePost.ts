@@ -12,6 +12,6 @@ export async function deletePost(formData: FormData) {
   const { error } = await supabase.from("posts").delete().eq("id", id);
   if (error) throw new Error(error.message);
 
-  revalidatePath("/dashboard/feed");
+  revalidatePath("/admin/dashboard/feed");
   revalidatePath("/feed");
 }

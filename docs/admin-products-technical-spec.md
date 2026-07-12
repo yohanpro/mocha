@@ -1,6 +1,6 @@
 # 관리자 상품 등록/수정 — 기술 설계 문서
 
-> 작성일: 2026-06-13 | 대상: `app/(admin)/dashboard/products/*`
+> 작성일: 2026-06-13 | 대상: `app/admin/dashboard/products/*`
 
 관리자가 상품을 등록·수정·상태변경(판매중/품절/숨김)하는 화면. 이미지는 **URL 입력 방식**(파일 업로드 아님).
 
@@ -9,9 +9,9 @@
 ## 1. 라우팅
 
 ```
-/dashboard/products         → 목록 (전체, hidden 포함)
-/dashboard/products/new     → 등록 폼
-/dashboard/products/[id]    → 수정 폼
+/admin/dashboard/products         → 목록 (전체, hidden 포함)
+/admin/dashboard/products/new     → 등록 폼
+/admin/dashboard/products/[id]    → 수정 폼
 ```
 
 > `new`(정적)가 `[id]`(동적)보다 우선이라 충돌 없음 — Next.js 라우트 우선순위.
@@ -36,7 +36,7 @@ RLS: `products_select`는 `using (true)`라 조회 자체는 누구나 가능. �
 ## 3. 컴포넌트 구조 (FSD)
 
 ```
-app/(admin)/dashboard/products/
+app/admin/dashboard/products/
   ├─ page.tsx          ← 목록 (Server, getAllProducts)
   ├─ new/page.tsx      ← <ProductForm />
   └─ [id]/page.tsx     ← getProduct(id) → <ProductForm product={...} />, 없으면 notFound()
@@ -57,8 +57,8 @@ const id = formData.get("id");           // 수정 폼에만 hidden input으로 
 const { error } = id
   ? await supabase.from("products").update(row).eq("id", id)   // 수정
   : await supabase.from("products").insert(row);               // 등록
-revalidatePath("/dashboard/products");
-redirect("/dashboard/products");
+revalidatePath("/admin/dashboard/products");
+redirect("/admin/dashboard/products");
 ```
 
 폼은 `useActionState(saveProduct, ...)` 하나로 두 모드를 다룬다. 수정 모드는 `<input type="hidden" name="id">` + 각 필드 `defaultValue`로 prefill.

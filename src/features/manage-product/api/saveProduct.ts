@@ -47,6 +47,6 @@ export async function saveProduct(
 
   if (error) return { error: error.message };
 
-  revalidatePath("/dashboard/products");
-  redirect("/dashboard/products");
+  revalidatePath("/admin/dashboard/products");
+  redirect("/admin/dashboard/products");
 }

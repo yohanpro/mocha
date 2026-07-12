@@ -1,6 +1,6 @@
 # 관리자 상품 등록/수정 — 페어 세션 노트
 
-> 작성일: 2026-06-13 | 같이 본 코드: `app/(admin)/dashboard/products/*`, `src/features/manage-product/*`
+> 작성일: 2026-06-13 | 같이 본 코드: `app/admin/dashboard/products/*`, `src/features/manage-product/*`
 >
 > "무엇을"은 [admin-products-technical-spec.md](admin-products-technical-spec.md)에. 여기선 **왜 그렇게 했고, 다음에 뭘 조심할지**.
 

@@ -1,6 +1,6 @@
 # 관리자 피드 등록/관리 — 페어 세션 노트
 
-> 작성일: 2026-07-05 | 같이 본 코드: `app/(admin)/dashboard/feed/*`, `src/features/manage-post/*`
+> 작성일: 2026-07-05 | 같이 본 코드: `app/admin/dashboard/feed/*`, `src/features/manage-post/*`
 >
 > "무엇을"은 [manage-feed-technical-spec.md](manage-feed-technical-spec.md)에. 여기선 **왜 그렇게 했고, 다음에 뭘 조심할지**.
 

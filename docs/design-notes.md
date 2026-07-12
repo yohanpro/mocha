@@ -40,14 +40,14 @@
 app/
   (consumer)/          ← 공개. 메인·상품·상세·주문·피드
     page.tsx  products/  products/[id]/  order/  feed/
-  (admin)/             ← 보호. proxy 게이트 뒤
+  admin/               ← 보호. proxy 게이트 뒤 (실제 세그먼트 → URL `/admin/*`)
     login/             ← 인증 진입
     dashboard/           ← page.tsx = 관리자 홈(처리할 일 요약 + 섹션 허브)
       orders/  products/  products/[id]/  products/new/  feed/  feed/new/
   api/posts/           ← 피드용 라우트 핸들러
 ```
 
-괄호 그룹 `(consumer)`/`(admin)`은 **URL에 안 드러나는 논리적 분리**다. 덕분에 관리자 전체를 `proxy.ts` matcher 하나(`/dashboard/*`, `/login`)로 감쌀 수 있다.
+소비자는 괄호 그룹 `(consumer)`로 **URL에 안 드러나는 논리적 분리**, 관리자는 실제 `admin/` 세그먼트라 **`/admin/*` 접두사**를 갖는다. 덕분에 관리자 전체를 `proxy.ts` matcher 하나(`/admin/dashboard/*`, `/admin/login`)로 감싸고, 나중에 소비자 로그인이 생겨도 `/login`이 겹치지 않는다. (2026-07-12 이동: 이전엔 `(admin)` 그룹이라 URL이 `/dashboard`·`/login`이었음.)
 
 ### src/ — FSD (Feature-Sliced Design)
 
@@ -112,12 +112,12 @@ posts (독립)  type: photo | youtube
 ## 6. 인증 — proxy 게이트 (Next 16)
 
 ```
-proxy.ts (matcher: /dashboard/*, /login)
+proxy.ts (matcher: /admin/dashboard/*, /admin/login)
   └─ updateSession(): Supabase 세션 쿠키 갱신 + 보호 판정
-       비로그인 + /dashboard/* → /login 리다이렉트
-       로그인  + /login        → /dashboard/orders
+       비로그인 + /admin/dashboard/* → /admin/login 리다이렉트
+       로그인  + /admin/login        → /admin/dashboard/orders
 
-dashboard/layout.tsx → 서버에서 getUser() 재확인 (이중 방어)
+admin/dashboard/layout.tsx → 서버에서 getUser() 재확인 (이중 방어)
 ```
 
 계정은 Supabase 대시보드에서 수동 생성(단일 관리자). 자세히: [admin-auth-technical-spec.md](admin-auth-technical-spec.md).

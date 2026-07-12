@@ -13,7 +13,7 @@ export default async function AdminFeedPage() {
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-lg font-bold">피드 관리</h1>
         <Button asChild size="sm">
-          <Link href="/dashboard/feed/new">
+          <Link href="/admin/dashboard/feed/new">
             <Plus className="size-4" />새 게시글
           </Link>
         </Button>

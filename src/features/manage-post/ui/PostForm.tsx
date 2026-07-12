@@ -65,7 +65,7 @@ export function PostForm() {
           {pending ? "등록 중…" : "게시글 등록"}
         </Button>
         <Button asChild variant="outline" type="button">
-          <Link href="/dashboard/feed">취소</Link>
+          <Link href="/admin/dashboard/feed">취소</Link>
         </Button>
       </div>
     </form>
